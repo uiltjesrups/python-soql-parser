@@ -37,14 +37,14 @@ int_num = ppc.signed_integer()
 field_right_value = (
     real_num | int_num | quotedString | field_name
 )  # need to add support for alg expressions
-whereCondition = Group(
+where_condition = Group(
     (field_name + binop + field_right_value)
     | (field_name + IN + Group("(" + delimitedList(field_right_value) + ")"))
     | (field_name + IS + (NULL | NOT_NULL))
 )
 
 where_expression = infixNotation(
-    whereCondition,
+    where_condition,
     [
         (NOT, 1, opAssoc.RIGHT),
         (AND, 2, opAssoc.LEFT),
