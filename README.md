@@ -21,10 +21,10 @@ where `parse_result` is a [ParseResults](https://pyparsing-docs.readthedocs.io/e
 
 # Notable unsupported features
 
-- Related attributes (e.g., `SELECT Id, Account.Name FROM Contact)
+- Related attributes (e.g., `SELECT Id, Account.Name FROM Contact`)
 - Subqueries (e.g., `SELECT Name, (SELECT LastName FROM Contacts) FROM Account`)
 - Aggregate queries
-- SOQL specific WHERE-clause tokens (e.g., LAST_N_DAYS:<integer>)
+- SOQL specific WHERE-clause tokens (e.g., `LAST_N_DAYS:<integer>`)
 
 # Contributing
 
