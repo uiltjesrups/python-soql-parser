@@ -14,6 +14,8 @@ def test_basic_query(query, sobject, fields):
     parsed = parse(query)
     assert parsed["sobject"] == sobject
     assert parsed["fields"].asList() == fields
+    # Should be no where clause
+    assert parsed["where"].asList() == []
 
 
 @pytest.mark.parametrize(

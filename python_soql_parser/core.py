@@ -1,20 +1,20 @@
 # stolen from https://github.com/pyparsing/pyparsing/blob/master/examples/simpleSQL.py
 
 from pyparsing import (
-    Word,
-    delimitedList,
-    Optional,
-    Group,
-    alphas,
-    alphanums,
-    Forward,
-    oneOf,
-    quotedString,
-    infixNotation,
-    opAssoc,
     CaselessKeyword,
+    Forward,
+    Group,
+    Optional,
     ParserElement,
-    pyparsing_common as ppc,
+    Word,
+    alphanums,
+    alphas,
+    delimitedList,
+    infixNotation,
+    oneOf,
+    opAssoc,
+    pyparsing_common,
+    quotedString,
 )
 
 ParserElement.enablePackrat()
@@ -25,16 +25,16 @@ SELECT, FROM, WHERE, AND, OR, IN, NULL = map(
     CaselessKeyword, "select from where and or in null".split()
 )
 
-ident = Word(alphas, alphanums).setName("identifier")
-field_name = delimitedList(ident).setName("field name")
-field_name.addParseAction(ppc.downcaseTokens)
+identifier = Word(alphas, alphanums).setName("identifier")
+field_name = delimitedList(identifier).setName("field name")
+field_name.addParseAction(pyparsing_common.downcaseTokens)
 field_name_list = Group(delimitedList(field_name))
-sobject_name = ident.setName("sobject name")
-sobject_name.addParseAction(ppc.downcaseTokens)
+sobject_name = identifier.setName("sobject name")
+sobject_name.addParseAction(pyparsing_common.downcaseTokens)
 
 binop = oneOf("= != < > >= <=")
-real_num = ppc.real()
-int_num = ppc.signed_integer()
+real_num = pyparsing_common.real()
+int_num = pyparsing_common.signed_integer()
 
 field_right_value = (
     real_num | int_num | quotedString | field_name
@@ -52,13 +52,15 @@ where_expression = infixNotation(
     ],
 )
 
+where_clause = Optional(Group(WHERE + where_expression), None)
+
 # define the grammar
 select_statement <<= (
     SELECT
     + field_name_list("fields")
     + FROM
     + sobject_name("sobject")
-    + Optional(Group(WHERE + where_expression), "")("where")
+    + where_clause("where")
 )
 
 soql = select_statement

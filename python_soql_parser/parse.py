@@ -1,20 +1,8 @@
-from pyparsing import (
-    Word,
-    delimitedList,
-    Optional,
-    Group,
-    alphas,
-    alphanums,
-    Forward,
-    oneOf,
-    quotedString,
-    infixNotation,
-    opAssoc,
-    restOfLine,
-    CaselessKeyword,
-    ParserElement,
-    pyparsing_common as ppc,
-)
+from pyparsing import (CaselessKeyword, Forward, Group, Optional,
+                       ParserElement, Word, alphanums, alphas, delimitedList,
+                       infixNotation, oneOf, opAssoc)
+from pyparsing import pyparsing_common as ppc
+from pyparsing import quotedString, restOfLine
 
 ParserElement.enablePackrat()
 
