@@ -1,7 +1,3 @@
-def parse(soql):
-    pass
-
-
 from pyparsing import (
     Word,
     delimitedList,
@@ -30,7 +26,7 @@ NOT_NULL = NOT + NULL
 
 ident = Word(alphas, alphanums).setName("identifier")
 field_name = delimitedList(ident).setName("field name")
-field_name.addParseAction(ppc.upcaseTokens)
+field_name.addParseAction(ppc.downcaseTokens)
 field_name_list = Group(delimitedList(field_name))
 sobject_name = ident.setName("sobject name")
 
@@ -68,14 +64,5 @@ select_statement <<= (
 soql = select_statement
 
 
-if __name__ == "__main__":
-    soql.runTests(
-        """\
-        # basic soql query
-        SELECT Id from Contact
-        # where clause
-        Select Id from Account where id in ('RED','GREEN','BLUE')
-        # where clause with comparison operator
-        Select Name,Title from sobject where Name eq Title
-        """
-    )
+def parse(soql_query: str):
+    return soql.parseString(soql_query)
