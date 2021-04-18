@@ -1,1 +1,1 @@
-__version__ = '0.1.0'
+from python_soql_parser.core import parse
