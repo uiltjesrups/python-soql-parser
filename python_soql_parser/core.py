@@ -21,10 +21,9 @@ ParserElement.enablePackrat()
 
 # define SQL tokens
 select_statement = Forward()
-SELECT, FROM, WHERE, AND, OR, IN, IS, NOT, NULL = map(
-    CaselessKeyword, "select from where and or in is not null".split()
+SELECT, FROM, WHERE, AND, OR, IN, NULL = map(
+    CaselessKeyword, "select from where and or in null".split()
 )
-NOT_NULL = NOT + NULL
 
 ident = Word(alphas, alphanums).setName("identifier")
 field_name = delimitedList(ident).setName("field name")
@@ -33,7 +32,7 @@ field_name_list = Group(delimitedList(field_name))
 sobject_name = ident.setName("sobject name")
 sobject_name.addParseAction(ppc.downcaseTokens)
 
-binop = oneOf("= != < > >= <= eq ne lt le gt ge", caseless=True)
+binop = oneOf("= != < > >= <=")
 real_num = ppc.real()
 int_num = ppc.signed_integer()
 
@@ -43,13 +42,11 @@ field_right_value = (
 where_condition = Group(
     (field_name + binop + field_right_value)
     | (field_name + IN + Group("(" + delimitedList(field_right_value) + ")"))
-    | (field_name + IS + (NULL | NOT_NULL))
 )
 
 where_expression = infixNotation(
     where_condition,
     [
-        (NOT, 1, opAssoc.RIGHT),
         (AND, 2, opAssoc.LEFT),
         (OR, 2, opAssoc.LEFT),
     ],
