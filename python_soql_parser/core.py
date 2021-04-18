@@ -14,7 +14,6 @@ from pyparsing import (
     quotedString,
     infixNotation,
     opAssoc,
-    restOfLine,
     CaselessKeyword,
     ParserElement,
     pyparsing_common as ppc,
@@ -69,14 +68,11 @@ selectStmt <<= (
     + Optional(Group(WHERE + whereExpression), "")("where")
 )
 
-simpleSQL = selectStmt
+soql = selectStmt
 
-# define Oracle comment format, and ignore them
-oracleSqlComment = "--" + restOfLine
-simpleSQL.ignore(oracleSqlComment)
 
 if __name__ == "__main__":
-    simpleSQL.runTests(
+    soql.runTests(
         """\
         # multiple tables
         SELECT * from XYZZY, ABC
