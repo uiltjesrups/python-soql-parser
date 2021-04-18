@@ -25,6 +25,12 @@ def test_basic_query(query, sobject, fields):
             ["id"],
             [["where", ["id", "!=", "null"]]],
         ),
+        (
+            "SELECT Id, Name FROM Contact WHERE (Id = '123' AND Name = null)",
+            "contact",
+            ["id", "name"],
+            [["where", [["id", "=", "'123'"], "and", ["name", "=", "null"]]]],
+        ),
     ],
 )
 def test_where_query(query, sobject, fields, where):
