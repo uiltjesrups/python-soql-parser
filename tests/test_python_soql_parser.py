@@ -31,6 +31,21 @@ def test_basic_query(query, sobject, fields):
             ["id", "name"],
             [["where", [["id", "=", "'123'"], "and", ["name", "=", "null"]]]],
         ),
+        (
+            "SELECT Id, Name, Title FROM Contact WHERE (Id = '123' AND Name = null) OR (Title != 'CEO')",
+            "contact",
+            ["id", "name", "title"],
+            [
+                [
+                    "where",
+                    [
+                        [["id", "=", "'123'"], "and", ["name", "=", "null"]],
+                        "or",
+                        ["title", "!=", "'CEO'"],
+                    ],
+                ]
+            ],
+        ),
     ],
 )
 def test_where_query(query, sobject, fields, where):
