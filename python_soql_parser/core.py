@@ -1,5 +1,7 @@
 # stolen from https://github.com/pyparsing/pyparsing/blob/master/examples/simpleSQL.py
 
+from typing import TypedDict, Any
+
 from pyparsing import (
     CaselessKeyword,
     Forward,
@@ -21,8 +23,8 @@ ParserElement.enablePackrat()
 
 # define SQL tokens
 select_statement = Forward()
-SELECT, FROM, WHERE, AND, OR, IN, NULL = map(
-    CaselessKeyword, "select from where and or in null".split()
+SELECT, FROM, WHERE, AND, OR, IN, NULL, LIMIT = map(
+    CaselessKeyword, "select from where and or in null limit".split()
 )
 
 identifier = Word(alphas, alphanums).setName("identifier")
@@ -36,9 +38,7 @@ binop = oneOf("= != < > >= <=")
 real_num = pyparsing_common.real()
 int_num = pyparsing_common.signed_integer()
 
-field_right_value = (
-    real_num | int_num | quotedString | field_name
-)  # need to add support for alg expressions
+field_right_value = real_num | int_num | quotedString | field_name
 where_condition = Group(
     (field_name + binop + field_right_value)
     | (field_name + IN + Group("(" + delimitedList(field_right_value) + ")"))
@@ -54,6 +54,8 @@ where_expression = infixNotation(
 
 where_clause = Optional(Group(WHERE + where_expression), None)
 
+limit_clause = Optional(Group(LIMIT + int_num), None)
+
 # define the grammar
 select_statement <<= (
     SELECT
@@ -61,10 +63,19 @@ select_statement <<= (
     + FROM
     + sobject_name("sobject")
     + where_clause("where")
+    + limit_clause("limit")
 )
 
 soql = select_statement
 
 
-def parse(soql_query: str):
+class SoqlQuery(TypedDict):
+    # TODO: type the `Any`s
+    fields: Any
+    sobject: str
+    where: Any
+    limit: Any
+
+
+def parse(soql_query: str) -> SoqlQuery:
     return soql.parseString(soql_query)

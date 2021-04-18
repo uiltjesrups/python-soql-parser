@@ -55,3 +55,17 @@ def test_where_query(query, sobject, fields, where):
     assert parsed["sobject"] == sobject
     assert parsed["fields"].asList() == fields
     assert parsed["where"].asList() == where
+
+
+@pytest.mark.parametrize(
+    "query,sobject,fields,limit",
+    [
+        ("Select Id FROM Contact LIMIT 1", "contact", ["id"], [["limit", 1]]),
+        ("Select Id FROM Contact limit 99", "contact", ["id"], [["limit", 99]]),
+    ],
+)
+def test_query_with_limit(query, sobject, fields, limit):
+    parsed = parse(query)
+    assert parsed["sobject"] == sobject
+    assert parsed["fields"].asList() == fields
+    assert parsed["limit"].asList() == limit
