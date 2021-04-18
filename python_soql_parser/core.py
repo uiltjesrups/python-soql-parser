@@ -1,3 +1,5 @@
+# stolen from https://github.com/pyparsing/pyparsing/blob/master/examples/simpleSQL.py
+
 from pyparsing import (
     Word,
     delimitedList,
@@ -29,6 +31,7 @@ field_name = delimitedList(ident).setName("field name")
 field_name.addParseAction(ppc.downcaseTokens)
 field_name_list = Group(delimitedList(field_name))
 sobject_name = ident.setName("sobject name")
+sobject_name.addParseAction(ppc.downcaseTokens)
 
 binop = oneOf("= != < > >= <= eq ne lt le gt ge", caseless=True)
 real_num = ppc.real()

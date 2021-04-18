@@ -4,10 +4,13 @@ from python_soql_parser import parse
 
 
 @pytest.mark.parametrize(
-    "fields_string,expected",
-    [("Id", ["id"]), ("id, NAME", ["id", "name"])],
+    "query,sobject,fields",
+    [
+        ("Select Id FROM Contact", "contact", ["id"]),
+        ("SElECT id, NAME from CONTACT", "contact", ["id", "name"]),
+    ],
 )
-def test_basic_query(fields_string, expected):
-    parsed = parse(f"SELECT {fields_string} FROM Contact")
-    assert parsed["sobject"] == "Contact"
-    assert parsed["fields"].asList() == expected
+def test_basic_query(query, sobject, fields):
+    parsed = parse(query)
+    assert parsed["sobject"] == sobject
+    assert parsed["fields"].asList() == fields
