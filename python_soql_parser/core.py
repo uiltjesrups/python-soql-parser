@@ -62,7 +62,7 @@ where_expression = infixNotation(
 # define the grammar
 select_statement <<= (
     SELECT
-    + ("*" | column_name_list)("columns")
+    + column_name_list("columns")
     + FROM
     + table_name_list("tables")
     + Optional(Group(WHERE + where_expression), "")("where")
@@ -75,9 +75,9 @@ if __name__ == "__main__":
     soql.runTests(
         """\
         # multiple tables
-        SELECT * from XYZZY, ABC
+        SELECT A from XYZZY, ABC
         # dotted table name
-        select * from SYS.XYZZY
+        select A from SYS.XYZZY
         Select A from Sys.dual
         Select A,B,C from Sys.dual
         Select A, B, C from Sys.dual, Table2
@@ -88,7 +88,7 @@ if __name__ == "__main__":
         # FAIL - incomplete statement
         Select
         # FAIL - incomplete statement
-        Select * from
+        Select A from
         # FAIL - invalid column
         Select &&& frox Sys.dual
         # where clause
