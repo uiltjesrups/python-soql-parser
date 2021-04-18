@@ -1,7 +1,3 @@
-def parse(soql):
-    pass
-
-
 from pyparsing import (
     Word,
     delimitedList,
