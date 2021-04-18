@@ -33,7 +33,7 @@ If you want to contribute, just open a PR! (and add a test for your new feature)
 
 ## Setting up locally
 
-First instally (poetry)[https://python-poetry.org/]. Afterwards, to install the dependencies, run
+First install [poetry](https://python-poetry.org/). Afterwards, to install the dependencies, run
 
 ```
 poetry install
