@@ -1,3 +1,5 @@
+**CONTRIBUTORS WANTED!!**
+
 # Installation
 
 `pip install python-soql-parser`
@@ -26,7 +28,8 @@ where `parse_result` is a [ParseResults](https://pyparsing-docs.readthedocs.io/e
 
 # Contributing
 
-A lot of work remains to be done. If you want to contribute, just open a PR! (and add a test for your new feature)
+A lot of work remains to be done. Practically no SOQL-specific features are supported as of yet.
+If you want to contribute, just open a PR! (and add a test for your new feature)
 
 ## Setting up locally
 
@@ -43,3 +46,7 @@ Simply execute
 ```
 pytest
 ```
+
+## House cleaning
+
+Please sort imports with `isort` and format the code with `black` (in that order).
