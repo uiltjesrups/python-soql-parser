@@ -29,25 +29,25 @@ SELECT, FROM, WHERE, AND, OR, IN, IS, NOT, NULL = map(
 NOT_NULL = NOT + NULL
 
 ident = Word(alphas, alphanums + "_$").setName("identifier")
-column_name = delimitedList(ident, ".", combine=True).setName("column name")
-column_name.addParseAction(ppc.upcaseTokens)
-column_name_list = Group(delimitedList(column_name))
-table_name = delimitedList(ident, ".", combine=True).setName("table name")
-table_name.addParseAction(ppc.upcaseTokens)
-table_name_list = Group(delimitedList(table_name))
+field_name = delimitedList(ident, ".", combine=True).setName("field name")
+field_name.addParseAction(ppc.upcaseTokens)
+field_name_list = Group(delimitedList(field_name))
+sobject_name = delimitedList(ident, ".", combine=True).setName("sobject name")
+sobject_name.addParseAction(ppc.upcaseTokens)
+sobject_name_list = Group(delimitedList(sobject_name))
 
 binop = oneOf("= != < > >= <= eq ne lt le gt ge", caseless=True)
 real_num = ppc.real()
 int_num = ppc.signed_integer()
 
-column_right_value = (
-    real_num | int_num | quotedString | column_name
+field_right_value = (
+    real_num | int_num | quotedString | field_name
 )  # need to add support for alg expressions
 whereCondition = Group(
-    (column_name + binop + column_right_value)
-    | (column_name + IN + Group("(" + delimitedList(column_right_value) + ")"))
-    | (column_name + IN + Group("(" + select_statement + ")"))
-    | (column_name + IS + (NULL | NOT_NULL))
+    (field_name + binop + field_right_value)
+    | (field_name + IN + Group("(" + delimitedList(field_right_value) + ")"))
+    | (field_name + IN + Group("(" + select_statement + ")"))
+    | (field_name + IS + (NULL | NOT_NULL))
 )
 
 where_expression = infixNotation(
@@ -62,9 +62,9 @@ where_expression = infixNotation(
 # define the grammar
 select_statement <<= (
     SELECT
-    + column_name_list("columns")
+    + field_name_list("fields")
     + FROM
-    + table_name_list("tables")
+    + sobject_name_list("sobjects")
     + Optional(Group(WHERE + where_expression), "")("where")
 )
 
@@ -74,13 +74,13 @@ soql = select_statement
 if __name__ == "__main__":
     soql.runTests(
         """\
-        # multiple tables
+        # multiple sobjects
         SELECT A from XYZZY, ABC
-        # dotted table name
+        # dotted sobject name
         select A from SYS.XYZZY
         Select A from Sys.dual
         Select A,B,C from Sys.dual
-        Select A, B, C from Sys.dual, Table2
+        Select A, B, C from Sys.dual, Sobject2
         # FAIL - invalid SELECT keyword
         Xelect A, B, C from Sys.dual
         # FAIL - invalid FROM keyword
@@ -89,13 +89,13 @@ if __name__ == "__main__":
         Select
         # FAIL - incomplete statement
         Select A from
-        # FAIL - invalid column
+        # FAIL - invalid field
         Select &&& frox Sys.dual
         # where clause
         Select A from Sys.dual where a in ('RED','GREEN','BLUE')
         # compound where clause
         Select A from Sys.dual where a in ('RED','GREEN','BLUE') and b in (10,20,30)
         # where clause with comparison operator
-        Select A,b from table1,table2 where table1.id eq table2.id
+        Select A,b from sobject1,sobject2 where sobject1.id eq sobject2.id
         """
     )
