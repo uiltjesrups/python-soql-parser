@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "python-soql-parser"
-version = "0.1.0"
+version = "0.1.1"
 description = "A pyparsing-based library for parsing SOQL statements"
 license = "MIT"
 readme = "README.md"
