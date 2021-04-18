@@ -28,13 +28,11 @@ SELECT, FROM, WHERE, AND, OR, IN, IS, NOT, NULL = map(
 )
 NOT_NULL = NOT + NULL
 
-ident = Word(alphas, alphanums + "_$").setName("identifier")
-field_name = delimitedList(ident, ".", combine=True).setName("field name")
+ident = Word(alphas, alphanums).setName("identifier")
+field_name = delimitedList(ident).setName("field name")
 field_name.addParseAction(ppc.upcaseTokens)
 field_name_list = Group(delimitedList(field_name))
-sobject_name = delimitedList(ident, ".", combine=True).setName("sobject name")
-sobject_name.addParseAction(ppc.upcaseTokens)
-sobject_name_list = Group(delimitedList(sobject_name))
+sobject_name = ident.setName("sobject name")
 
 binop = oneOf("= != < > >= <= eq ne lt le gt ge", caseless=True)
 real_num = ppc.real()
@@ -46,7 +44,6 @@ field_right_value = (
 whereCondition = Group(
     (field_name + binop + field_right_value)
     | (field_name + IN + Group("(" + delimitedList(field_right_value) + ")"))
-    | (field_name + IN + Group("(" + select_statement + ")"))
     | (field_name + IS + (NULL | NOT_NULL))
 )
 
@@ -64,7 +61,7 @@ select_statement <<= (
     SELECT
     + field_name_list("fields")
     + FROM
-    + sobject_name_list("sobjects")
+    + sobject_name("sobject")
     + Optional(Group(WHERE + where_expression), "")("where")
 )
 
@@ -74,28 +71,11 @@ soql = select_statement
 if __name__ == "__main__":
     soql.runTests(
         """\
-        # multiple sobjects
-        SELECT A from XYZZY, ABC
-        # dotted sobject name
-        select A from SYS.XYZZY
-        Select A from Sys.dual
-        Select A,B,C from Sys.dual
-        Select A, B, C from Sys.dual, Sobject2
-        # FAIL - invalid SELECT keyword
-        Xelect A, B, C from Sys.dual
-        # FAIL - invalid FROM keyword
-        Select A, B, C frox Sys.dual
-        # FAIL - incomplete statement
-        Select
-        # FAIL - incomplete statement
-        Select A from
-        # FAIL - invalid field
-        Select &&& frox Sys.dual
+        # basic soql query
+        SELECT Id from Contact
         # where clause
-        Select A from Sys.dual where a in ('RED','GREEN','BLUE')
-        # compound where clause
-        Select A from Sys.dual where a in ('RED','GREEN','BLUE') and b in (10,20,30)
+        Select Id from Account where id in ('RED','GREEN','BLUE')
         # where clause with comparison operator
-        Select A,b from sobject1,sobject2 where sobject1.id eq sobject2.id
+        Select Name,Title from sobject where Name eq Title
         """
     )
