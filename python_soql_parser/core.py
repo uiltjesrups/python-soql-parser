@@ -22,35 +22,35 @@ from pyparsing import (
 ParserElement.enablePackrat()
 
 # define SQL tokens
-selectStmt = Forward()
+select_statement = Forward()
 SELECT, FROM, WHERE, AND, OR, IN, IS, NOT, NULL = map(
     CaselessKeyword, "select from where and or in is not null".split()
 )
 NOT_NULL = NOT + NULL
 
 ident = Word(alphas, alphanums + "_$").setName("identifier")
-columnName = delimitedList(ident, ".", combine=True).setName("column name")
-columnName.addParseAction(ppc.upcaseTokens)
-columnNameList = Group(delimitedList(columnName))
-tableName = delimitedList(ident, ".", combine=True).setName("table name")
-tableName.addParseAction(ppc.upcaseTokens)
-tableNameList = Group(delimitedList(tableName))
+column_name = delimitedList(ident, ".", combine=True).setName("column name")
+column_name.addParseAction(ppc.upcaseTokens)
+column_name_list = Group(delimitedList(column_name))
+table_name = delimitedList(ident, ".", combine=True).setName("table name")
+table_name.addParseAction(ppc.upcaseTokens)
+table_name_list = Group(delimitedList(table_name))
 
 binop = oneOf("= != < > >= <= eq ne lt le gt ge", caseless=True)
-realNum = ppc.real()
-intNum = ppc.signed_integer()
+real_num = ppc.real()
+int_num = ppc.signed_integer()
 
-columnRval = (
-    realNum | intNum | quotedString | columnName
+column_right_value = (
+    real_num | int_num | quotedString | column_name
 )  # need to add support for alg expressions
 whereCondition = Group(
-    (columnName + binop + columnRval)
-    | (columnName + IN + Group("(" + delimitedList(columnRval) + ")"))
-    | (columnName + IN + Group("(" + selectStmt + ")"))
-    | (columnName + IS + (NULL | NOT_NULL))
+    (column_name + binop + column_right_value)
+    | (column_name + IN + Group("(" + delimitedList(column_right_value) + ")"))
+    | (column_name + IN + Group("(" + select_statement + ")"))
+    | (column_name + IS + (NULL | NOT_NULL))
 )
 
-whereExpression = infixNotation(
+where_expression = infixNotation(
     whereCondition,
     [
         (NOT, 1, opAssoc.RIGHT),
@@ -60,15 +60,15 @@ whereExpression = infixNotation(
 )
 
 # define the grammar
-selectStmt <<= (
+select_statement <<= (
     SELECT
-    + ("*" | columnNameList)("columns")
+    + ("*" | column_name_list)("columns")
     + FROM
-    + tableNameList("tables")
-    + Optional(Group(WHERE + whereExpression), "")("where")
+    + table_name_list("tables")
+    + Optional(Group(WHERE + where_expression), "")("where")
 )
 
-soql = selectStmt
+soql = select_statement
 
 
 if __name__ == "__main__":
