@@ -60,8 +60,8 @@ def test_where_query(query, sobject, fields, where):
 @pytest.mark.parametrize(
     "query,sobject,fields,limit",
     [
-        ("Select Id FROM Contact LIMIT 1", "contact", ["id"], [["limit", 1]]),
-        ("Select Id FROM Contact limit 99", "contact", ["id"], [["limit", 99]]),
+        ("Select Id FROM Contact LIMIT 1", "contact", ["id"], [1]),
+        ("Select Id FROM Contact limit 99", "contact", ["id"], [99]),
     ],
 )
 def test_query_with_limit(query, sobject, fields, limit):

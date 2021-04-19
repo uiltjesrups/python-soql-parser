@@ -8,6 +8,8 @@ from pyparsing import (
     Group,
     Optional,
     ParserElement,
+    PrecededBy,
+    Suppress,
     Word,
     alphanums,
     alphas,
@@ -54,7 +56,7 @@ where_expression = infixNotation(
 
 where_clause = Optional(Group(WHERE + where_expression), None)
 
-limit_clause = Optional(Group(LIMIT + int_num), None)
+limit_clause = Optional(Suppress(LIMIT) + int_num, None)
 
 # define the grammar
 select_statement <<= (
