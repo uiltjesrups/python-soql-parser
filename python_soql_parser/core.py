@@ -54,7 +54,7 @@ where_expression = infixNotation(
     ],
 )
 
-where_clause = Optional(Group(WHERE + where_expression), None)
+where_clause = Optional(Suppress(WHERE) + where_expression, None)
 
 limit_clause = Optional(Suppress(LIMIT) + int_num, None)
 
