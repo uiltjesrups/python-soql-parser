@@ -11,7 +11,7 @@ or, with poetry
 # Usage
 
 ```python
-from python_sql_parser import parse
+from python_soql_parser import parse
 
 
 parse_result = parse("SELECT Id FROM Account")
