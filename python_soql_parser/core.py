@@ -1,6 +1,6 @@
 # stolen from https://github.com/pyparsing/pyparsing/blob/master/examples/simpleSQL.py
 
-from typing import TypedDict, Any
+from typing import Any, TypedDict
 
 from pyparsing import (
     CaselessKeyword,
@@ -8,7 +8,6 @@ from pyparsing import (
     Group,
     Optional,
     ParserElement,
-    PrecededBy,
     Suppress,
     Word,
     alphanums,
@@ -21,7 +20,7 @@ from pyparsing import (
     quotedString,
 )
 
-from python_soql_parser.binops import EQ, NEQ, LT, LTE, GT, GTE
+from python_soql_parser.binops import EQ, GT, GTE, LT, LTE, NEQ
 
 ParserElement.enablePackrat()
 
@@ -30,7 +29,7 @@ SELECT, FROM, WHERE, AND, OR, IN, NULL, LIMIT = map(
     CaselessKeyword, "select from where and or in null limit".split()
 )
 
-identifier = Word(alphas, alphanums).setName("identifier")
+identifier = Word(alphas, alphanums + "_").setName("identifier")
 field_name = delimitedList(identifier).setName("field name")
 field_name.addParseAction(pyparsing_common.downcaseTokens)
 field_name_list = Group(delimitedList(field_name))

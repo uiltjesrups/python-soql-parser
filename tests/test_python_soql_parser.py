@@ -8,6 +8,11 @@ from python_soql_parser import parse
     [
         ("Select Id FROM Contact", "contact", ["id"]),
         ("SElECT id, NAME from CONTACT", "contact", ["id", "name"]),
+        (
+            "SElECT Id, SuperTitle__c from Custom_Object__c",
+            "custom_object__c",
+            ["id", "supertitle__c"],
+        ),
     ],
 )
 def test_basic_query(query, sobject, fields):
