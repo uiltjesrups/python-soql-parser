@@ -21,9 +21,10 @@ from pyparsing import (
     quotedString,
 )
 
+from python_soql_parser.binops import EQ, NEQ, LT, LTE, GT, GTE
+
 ParserElement.enablePackrat()
 
-# define SQL tokens
 select_statement = Forward()
 SELECT, FROM, WHERE, AND, OR, IN, NULL, LIMIT = map(
     CaselessKeyword, "select from where and or in null limit".split()
@@ -36,7 +37,8 @@ field_name_list = Group(delimitedList(field_name))
 sobject_name = identifier.setName("sobject name")
 sobject_name.addParseAction(pyparsing_common.downcaseTokens)
 
-binop = oneOf("= != < > >= <=")
+
+binop = oneOf(f"{EQ} {NEQ} {LT} {LTE} {GT} {GTE}")
 real_num = pyparsing_common.real()
 int_num = pyparsing_common.signed_integer()
 
