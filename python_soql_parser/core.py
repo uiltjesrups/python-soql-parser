@@ -31,10 +31,8 @@ SELECT, FROM, WHERE, AND, OR, IN, NULL, LIMIT = map(
 
 identifier = Word(alphas, alphanums + "_").setName("identifier")
 field_name = delimitedList(identifier).setName("field name")
-field_name.addParseAction(pyparsing_common.downcaseTokens)
 field_name_list = Group(delimitedList(field_name))
 sobject_name = identifier.setName("sobject name")
-sobject_name.addParseAction(pyparsing_common.downcaseTokens)
 
 
 binop = oneOf(f"{EQ} {NEQ} {LT} {LTE} {GT} {GTE}")

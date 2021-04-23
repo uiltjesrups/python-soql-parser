@@ -6,12 +6,12 @@ from python_soql_parser import parse
 @pytest.mark.parametrize(
     "query,sobject,fields",
     [
-        ("Select Id FROM Contact", "contact", ["id"]),
-        ("SElECT id, NAME from CONTACT", "contact", ["id", "name"]),
+        ("Select Id FROM Contact", "Contact", ["Id"]),
+        ("SElECT Id, Name from Contact", "Contact", ["Id", "Name"]),
         (
             "SElECT Id, SuperTitle__c from Custom_Object__c",
-            "custom_object__c",
-            ["id", "supertitle__c"],
+            "Custom_Object__c",
+            ["Id", "SuperTitle__c"],
         ),
     ],
 )
@@ -28,25 +28,25 @@ def test_basic_query(query, sobject, fields):
     [
         (
             "SELECT Id FROM Contact WHERE Id != null",
-            "contact",
-            ["id"],
-            [["id", "!=", "null"]],
+            "Contact",
+            ["Id"],
+            [["Id", "!=", "null"]],
         ),
         (
             "SELECT Id, Name FROM Contact WHERE (Id = '123' AND Name = null)",
-            "contact",
-            ["id", "name"],
-            [[["id", "=", "'123'"], "and", ["name", "=", "null"]]],
+            "Contact",
+            ["Id", "Name"],
+            [[["Id", "=", "'123'"], "and", ["Name", "=", "null"]]],
         ),
         (
             "SELECT Id, Name, Title FROM Contact WHERE (Id = '123' AND Name = null) OR (Title != 'CEO')",
-            "contact",
-            ["id", "name", "title"],
+            "Contact",
+            ["Id", "Name", "Title"],
             [
                 [
-                    [["id", "=", "'123'"], "and", ["name", "=", "null"]],
+                    [["Id", "=", "'123'"], "and", ["Name", "=", "null"]],
                     "or",
-                    ["title", "!=", "'CEO'"],
+                    ["Title", "!=", "'CEO'"],
                 ],
             ],
         ),
@@ -62,8 +62,8 @@ def test_where_query(query, sobject, fields, where):
 @pytest.mark.parametrize(
     "query,sobject,fields,limit",
     [
-        ("Select Id FROM Contact LIMIT 1", "contact", ["id"], [1]),
-        ("Select Id FROM Contact limit 99", "contact", ["id"], [99]),
+        ("Select Id FROM Contact LIMIT 1", "Contact", ["Id"], [1]),
+        ("Select Id FROM Contact limit 99", "Contact", ["Id"], [99]),
     ],
 )
 def test_query_with_limit(query, sobject, fields, limit):
