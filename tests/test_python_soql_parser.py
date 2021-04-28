@@ -71,3 +71,27 @@ def test_query_with_limit(query, sobject, fields, limit):
     assert parsed["sobject"] == sobject
     assert parsed["fields"].asList() == fields
     assert parsed["limit"].asList() == limit
+
+
+@pytest.mark.parametrize(
+    "query,sobject,fields,order",
+    [
+        (
+            "Select Id FROM Contact ORDER BY Id DESC",
+            "Contact",
+            ["Id"],
+            [[["Id", "desc"]]],
+        ),
+        (
+            "Select Id, Name, Title FROM Contact ORDER BY Id DESC, Name ASC, Title DESC",
+            "Contact",
+            ["Id", "Name", "Title"],
+            [[["Id", "desc"], ["Name", "asc"], ["Title", "desc"]]],
+        ),
+    ],
+)
+def test_query_with_order_by(query, sobject, fields, order):
+    parsed = parse(query)
+    assert parsed["sobject"] == sobject
+    assert parsed["fields"].asList() == fields
+    assert parsed["order_by"].asList() == order

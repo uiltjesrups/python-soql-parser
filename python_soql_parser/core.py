@@ -25,8 +25,8 @@ from python_soql_parser.binops import EQ, GT, GTE, LT, LTE, NEQ
 ParserElement.enablePackrat()
 
 select_statement = Forward()
-SELECT, FROM, WHERE, AND, OR, IN, NULL, LIMIT = map(
-    CaselessKeyword, "select from where and or in null limit".split()
+SELECT, FROM, WHERE, AND, OR, IN, NULL, LIMIT, ORDER, BY, DESC, ASC = map(
+    CaselessKeyword, "select from where and or in null limit order by desc asc".split()
 )
 
 identifier = Word(alphas, alphanums + "_").setName("identifier")
@@ -57,6 +57,12 @@ where_clause = Optional(Suppress(WHERE) + where_expression, None)
 
 limit_clause = Optional(Suppress(LIMIT) + int_num, None)
 
+ordering_term = Group(field_name + Optional(ASC | DESC)("direction"))
+
+order_clause = Optional(
+    Suppress(ORDER) + Suppress(BY) + Group(delimitedList(ordering_term))
+)
+
 # define the grammar
 select_statement <<= (
     SELECT
@@ -64,6 +70,7 @@ select_statement <<= (
     + FROM
     + sobject_name("sobject")
     + where_clause("where")
+    + order_clause("order_by")
     + limit_clause("limit")
 )
 
