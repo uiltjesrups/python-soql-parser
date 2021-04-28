@@ -25,7 +25,6 @@ where `parse_result` is a [ParseResults](https://pyparsing-docs.readthedocs.io/e
 - Subqueries (e.g., `SELECT Name, (SELECT LastName FROM Contacts) FROM Account`)
 - Aggregate queries
 - SOQL specific WHERE-clause tokens (e.g., `LAST_N_DAYS:<integer>`)
-- ORDER BY
 
 # Contributing
 
