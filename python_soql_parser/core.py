@@ -25,8 +25,9 @@ from python_soql_parser.binops import EQ, GT, GTE, LT, LTE, NEQ
 ParserElement.enablePackrat()
 
 select_statement = Forward()
-SELECT, FROM, WHERE, AND, OR, IN, NULL, LIMIT, ORDER, BY, DESC, ASC = map(
-    CaselessKeyword, "select from where and or in null limit order by desc asc".split()
+SELECT, FROM, WHERE, AND, OR, IN, NULL, TRUE, FALSE, LIMIT, ORDER, BY, DESC, ASC = map(
+    CaselessKeyword,
+    "select from where and or in null true false limit order by desc asc".split(),
 )
 
 identifier = Word(alphas, alphanums + "_").setName("identifier")

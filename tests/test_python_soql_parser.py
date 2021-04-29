@@ -33,6 +33,18 @@ def test_basic_query(query, sobject, fields):
             [["Id", "!=", "null"]],
         ),
         (
+            "SELECT IsDeleted FROM Contact WHERE IsDeleted != true",
+            "Contact",
+            ["IsDeleted"],
+            [["IsDeleted", "!=", "true"]],
+        ),
+        (
+            "SELECT IsDeleted FROM Contact WHERE IsDeleted = false",
+            "Contact",
+            ["IsDeleted"],
+            [["IsDeleted", "=", "false"]],
+        ),
+        (
             "SELECT Id, Name FROM Contact WHERE (Id = '123' AND Name = null)",
             "Contact",
             ["Id", "Name"],
