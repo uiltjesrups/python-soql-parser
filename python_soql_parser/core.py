@@ -9,6 +9,7 @@ from pyparsing import (
     Optional,
     ParserElement,
     Suppress,
+    StringEnd,
     Word,
     alphanums,
     alphas,
