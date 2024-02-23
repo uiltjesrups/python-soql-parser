@@ -1,4 +1,5 @@
 import pytest
+from pyparsing import ParseException
 
 from python_soql_parser import parse
 
@@ -201,3 +202,18 @@ def test_query_with_parent_attribute(query, sobject, fields):
 def test_query_datetime(query, where):
     parsed = parse(query)
     assert parsed["where"].asList() == where
+
+
+@pytest.mark.parametrize(
+    "query,result",
+    [
+        ("", 'Expected "select"'),
+        ("select Id", 'Expected "from"'),
+        ("select Id from", "Expected sobject name"),
+        ("select Id from Obj where", "Expected end of text, found 'w'"),
+    ],
+)
+def test_exceptions(query, result):
+    with pytest.raises(Exception) as e:
+        parse(query)
+    assert str(e.value).startswith(result)
