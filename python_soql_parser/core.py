@@ -77,6 +77,7 @@ select_statement <<= (
     + order_clause("order_by")
     + limit_clause("limit")
     + offset_clause("offset")
+    + StringEnd()
 )
 
 soql = select_statement
